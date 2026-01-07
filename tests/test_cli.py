@@ -4,7 +4,7 @@ from typer.testing import CliRunner
 
 from dhis2_era5land.cli import app
 
-runner = CliRunner()
+runner = CliRunner(mix_stderr=False, color=False)
 
 
 def test_cli_help() -> None:
