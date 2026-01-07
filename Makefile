@@ -1,4 +1,4 @@
-.PHONY: help install lint clean
+.PHONY: help install lint run clean
 
 # ==============================================================================
 # Venv
@@ -18,6 +18,7 @@ help:
 	@echo "Targets:"
 	@echo "  install      Install dependencies"
 	@echo "  lint         Run linter and type checker"
+	@echo "  run          Run the import script"
 	@echo "  clean        Clean up temporary files"
 
 install:
@@ -31,6 +32,9 @@ lint:
 	@echo ">>> Running type checker"
 	@$(UV) run mypy .
 	@$(UV) run pyright
+
+run:
+	@$(UV) run python main.py
 
 clean:
 	@echo ">>> Cleaning up"
