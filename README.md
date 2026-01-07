@@ -35,7 +35,7 @@ uv run dhis2-era5land -v
 | `--variable` | ERA5 variable name | `total_precipitation` |
 | `--data-element-id` | DHIS2 data element ID | `bMoGyfJoH9c` |
 | `--value-col` | Value column name | `tp` |
-| `--value-transform` | Value transform (`meters_to_millimeters`, `identity`) | `meters_to_millimeters` |
+| `--value-transform` | Value transform (`meters_to_millimeters`, `meters_to_centimeters`, `kelvin_to_celsius`, `kelvin_to_fahrenheit`, `identity`) | `meters_to_millimeters` |
 | `--temporal-aggregation` | Temporal aggregation (`sum`, `mean`) | `sum` |
 | `--spatial-aggregation` | Spatial aggregation | `mean` |
 | `--timezone-offset` | Timezone offset in hours | `0` |
