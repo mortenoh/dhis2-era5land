@@ -19,6 +19,7 @@ dhis2-era5land = "dhis2_era5land.cli:app"
 dev = [
     "mypy>=1.18.2",
     "pyright>=1.1.407",
+    "pytest>=8.0.0",
     "ruff>=0.14.10",
 ]
 

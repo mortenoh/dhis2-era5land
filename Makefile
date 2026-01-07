@@ -1,4 +1,4 @@
-.PHONY: help install lint run clean
+.PHONY: help install lint lint-fix test run clean
 
 # ==============================================================================
 # Venv
@@ -17,7 +17,9 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  install      Install dependencies"
-	@echo "  lint         Run linter and type checker"
+	@echo "  lint         Run linter and type checker (check only)"
+	@echo "  lint-fix     Run linter with auto-fix"
+	@echo "  test         Run tests"
 	@echo "  run          Run the import script"
 	@echo "  clean        Clean up temporary files"
 
@@ -27,11 +29,20 @@ install:
 
 lint:
 	@echo ">>> Running linter"
-	@$(UV) run ruff format .
-	@$(UV) run ruff check . --fix
+	@$(UV) run ruff format --check .
+	@$(UV) run ruff check .
 	@echo ">>> Running type checker"
 	@$(UV) run mypy .
 	@$(UV) run pyright
+
+lint-fix:
+	@echo ">>> Running linter (with fixes)"
+	@$(UV) run ruff format .
+	@$(UV) run ruff check . --fix
+
+test:
+	@echo ">>> Running tests"
+	@$(UV) run pytest -v
 
 run:
 	@$(UV) run dhis2-era5land
