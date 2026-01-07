@@ -1,5 +1,12 @@
 # dhis2-era5land
 
+[![CI](https://github.com/mortenoh/dhis2-era5land/actions/workflows/ci.yml/badge.svg)](https://github.com/mortenoh/dhis2-era5land/actions/workflows/ci.yml)
+[![Docker](https://github.com/mortenoh/dhis2-era5land/actions/workflows/docker.yml/badge.svg)](https://github.com/mortenoh/dhis2-era5land/actions/workflows/docker.yml)
+[![Docs](https://github.com/mortenoh/dhis2-era5land/actions/workflows/docs.yml/badge.svg)](https://mortenoh.github.io/dhis2-era5land/)
+[![GHCR](https://img.shields.io/badge/ghcr.io-mortenoh%2Fdhis2--era5land-blue)](https://github.com/mortenoh/dhis2-era5land/pkgs/container/dhis2-era5land)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Import ERA5-Land climate data into DHIS2.
 
 ## Installation
