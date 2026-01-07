@@ -8,6 +8,7 @@ dependencies = [
     "dhis2-client",
     "dhis2eo",
     "earthkit>=0.13.2",
+    "pydantic-settings>=2.7.0",
     "typer>=0.21.0",
 ]
 
