@@ -22,7 +22,7 @@ data_element_id = "bMoGyfJoH9c"  # update this to the correct DHIS2 data element
 value_col = "tp"  # name of the column that contains the values
 
 
-def value_processing(value):
+def value_processing(value: float) -> float:
     """Convert precipitation from meters to millimeters."""
     return value * 1000
 

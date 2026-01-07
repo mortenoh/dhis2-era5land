@@ -68,10 +68,6 @@ module = [
 ]
 ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-module = "dhis2_era5land.main"
-disallow_untyped_defs = false
-
 [tool.pyright]
 include = ["src"]
 pythonVersion = "3.12"
