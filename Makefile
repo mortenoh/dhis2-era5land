@@ -34,7 +34,7 @@ lint:
 	@$(UV) run pyright
 
 run:
-	@$(UV) run python main.py
+	@PYTHONPATH=src $(UV) run python -m dhis2_era5land
 
 clean:
 	@echo ">>> Cleaning up"
