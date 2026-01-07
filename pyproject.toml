@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.scripts]
-dhis2-era5land = "dhis2_era5land.__main__:app"
+dhis2-era5land = "dhis2_era5land.cli:app"
 
 [dependency-groups]
 dev = [
