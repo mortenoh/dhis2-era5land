@@ -14,6 +14,8 @@ This tool downloads ERA5-Land climate data from the Copernicus Climate Data Stor
 - Configurable value transforms (unit conversion)
 - Incremental import (skips already imported periods)
 - Dry run mode for testing
+- **CLI mode** for one-time or scheduled imports
+- **API mode** for HTTP-triggered imports with status monitoring
 
 ## Quick Start
 
@@ -21,8 +23,24 @@ This tool downloads ERA5-Land climate data from the Copernicus Climate Data Stor
 # Install
 uv tool install dhis2-era5land --from git+https://github.com/mortenoh/dhis2-era5land
 
-# Run
-dhis2-era5land --start-date 2024-01-01 --end-date 2024-03-31
+# Run import
+dhis2-era5land run --start-date 2024-01-01 --end-date 2024-03-31
+
+# Or start API server
+dhis2-era5land serve
+```
+
+## Docker
+
+```bash
+# Build
+docker build -t dhis2-era5land .
+
+# Run import
+docker run --env-file .env dhis2-era5land run
+
+# Start API server
+docker run -p 8080:8080 --env-file .env dhis2-era5land serve
 ```
 
 ## Requirements

@@ -4,13 +4,17 @@ import logging
 from typing import Annotated
 
 import typer
+import uvicorn
 from dhis2_client import DHIS2Client
 
 from dhis2_era5land.importer import import_era5_land_to_dhis2
 from dhis2_era5land.settings import settings
 from dhis2_era5land.transforms import Transform, get_transform
 
-app = typer.Typer(help="Import ERA5-Land climate data into DHIS2.")
+app = typer.Typer(
+    help="Import ERA5-Land climate data into DHIS2.",
+    no_args_is_help=True,
+)
 
 
 @app.command()
@@ -65,4 +69,25 @@ def run(
         timezone_offset=timezone_offset,
         org_unit_level=org_unit_level,
         dry_run=dry_run,
+    )
+
+
+@app.command()
+def serve(
+    host: Annotated[str, typer.Option(help="Host to bind to")] = "0.0.0.0",
+    port: Annotated[int, typer.Option(help="Port to listen on")] = 8080,
+    verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Enable debug logging")] = False,
+) -> None:
+    """Start the API server."""
+    log_level = "debug" if verbose else "info"
+    logging.basicConfig(
+        level=logging.DEBUG if verbose else logging.INFO,
+        format="%(levelname)s: %(message)s",
+    )
+
+    uvicorn.run(
+        "dhis2_era5land.server:app",
+        host=host,
+        port=port,
+        log_level=log_level,
     )

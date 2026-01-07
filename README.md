@@ -12,15 +12,28 @@ uv tool install dhis2-era5land --from git+https://github.com/mortenoh/dhis2-era5
 uvx --from git+https://github.com/mortenoh/dhis2-era5land dhis2-era5land --help
 ```
 
-## Usage
+## Commands
+
+### run
+
+Run a one-time import:
 
 ```bash
-dhis2-era5land --start-date 2024-01-01 --end-date 2024-03-31
-dhis2-era5land --dry-run -v
-dhis2-era5land --variable 2m_temperature --value-transform kelvin_to_celsius
+dhis2-era5land run --start-date 2024-01-01 --end-date 2024-03-31
+dhis2-era5land run --dry-run -v
+dhis2-era5land run --variable 2m_temperature --value-transform kelvin_to_celsius
 ```
 
-## Options
+### serve
+
+Start the API server:
+
+```bash
+dhis2-era5land serve
+dhis2-era5land serve --port 3000 -v
+```
+
+## CLI Options (run)
 
 | Option | Description | Default |
 |--------|-------------|---------|
@@ -39,7 +52,31 @@ dhis2-era5land --variable 2m_temperature --value-transform kelvin_to_celsius
 | `--dry-run` | Don't actually import | `false` |
 | `-v, --verbose` | Enable debug logging | `false` |
 
-### Value Transforms
+## CLI Options (serve)
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--host` | Host to bind to | `0.0.0.0` |
+| `--port` | Port to listen on | `8080` |
+| `-v, --verbose` | Enable debug logging | `false` |
+
+## API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/status` | GET | Current import status |
+| `/import` | POST | Trigger an import |
+
+### POST /import
+
+```bash
+curl -X POST http://localhost:8080/import \
+  -H "Content-Type: application/json" \
+  -d '{"start_date": "2024-01-01", "end_date": "2024-03-31", "dry_run": true}'
+```
+
+## Value Transforms
 
 | Transform | Description |
 |-----------|-------------|
@@ -81,6 +118,19 @@ DHIS2_END_DATE=2024-12-31
 
 Note: `DHIS2_PASSWORD` can only be set via `.env` or environment variable (not CLI) for security.
 
+## Docker
+
+```bash
+# Build
+docker build -t dhis2-era5land .
+
+# Run import
+docker run --env-file .env dhis2-era5land run
+
+# Start API server
+docker run -p 8080:8080 --env-file .env dhis2-era5land serve
+```
+
 ## Development
 
 Requires Python 3.12+.
@@ -89,6 +139,6 @@ Requires Python 3.12+.
 make install   # Install dependencies
 make lint      # Run ruff, mypy, pyright (with auto-fix)
 make test      # Run tests
-make run       # Run the import
+make docs      # Build documentation
 make clean     # Clean up cache files
 ```

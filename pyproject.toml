@@ -8,8 +8,10 @@ dependencies = [
     "dhis2-client",
     "dhis2eo",
     "earthkit>=0.13.2",
+    "fastapi>=0.115.0",
     "pydantic-settings>=2.7.0",
     "typer>=0.21.0",
+    "uvicorn>=0.34.0",
 ]
 
 [project.scripts]
@@ -17,6 +19,7 @@ dhis2-era5land = "dhis2_era5land.cli:app"
 
 [dependency-groups]
 dev = [
+    "httpx>=0.28.0",
     "mkdocs>=1.6.0",
     "mkdocs-material>=9.5.0",
     "mypy>=1.18.2",
