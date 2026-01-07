@@ -1,4 +1,4 @@
-.PHONY: help install lint test run clean
+.PHONY: help install lint test run docs docs-serve clean
 
 # ==============================================================================
 # Venv
@@ -20,6 +20,8 @@ help:
 	@echo "  lint         Run linter and type checker"
 	@echo "  test         Run tests"
 	@echo "  run          Run the import script"
+	@echo "  docs         Build documentation"
+	@echo "  docs-serve   Serve documentation locally"
 	@echo "  clean        Clean up temporary files"
 
 install:
@@ -41,6 +43,12 @@ test:
 run:
 	@$(UV) run dhis2-era5land
 
+docs:
+	@$(UV) run mkdocs build
+
+docs-serve:
+	@$(UV) run mkdocs serve
+
 clean:
 	@echo ">>> Cleaning up"
 	@find . -type f -name "*.pyc" -delete
@@ -49,7 +57,7 @@ clean:
 	@find . -type d -name ".ruff_cache" -exec rm -rf {} + 2>/dev/null || true
 	@find . -type d -name ".mypy_cache" -exec rm -rf {} + 2>/dev/null || true
 	@rm -rf .coverage htmlcov coverage.xml
-	@rm -rf dist build *.egg-info
+	@rm -rf dist build *.egg-info site
 
 # ==============================================================================
 # Default

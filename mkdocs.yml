@@ -1,0 +1,20 @@
+site_name: dhis2-era5land
+site_url: https://mortenoh.github.io/dhis2-era5land
+repo_url: https://github.com/mortenoh/dhis2-era5land
+repo_name: mortenoh/dhis2-era5land
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: blue
+    accent: light-blue
+
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Configuration: configuration.md
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
