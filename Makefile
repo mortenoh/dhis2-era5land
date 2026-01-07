@@ -1,4 +1,4 @@
-.PHONY: help install lint test run docs docs-serve clean
+.PHONY: help install lint test run docs docs-serve docker-build docker-run docker-serve clean
 
 # ==============================================================================
 # Venv
@@ -16,13 +16,16 @@ help:
 	@echo "Usage: make [target]"
 	@echo ""
 	@echo "Targets:"
-	@echo "  install      Install dependencies"
-	@echo "  lint         Run linter and type checker"
-	@echo "  test         Run tests"
-	@echo "  run          Run the import script"
-	@echo "  docs         Build documentation"
-	@echo "  docs-serve   Serve documentation locally"
-	@echo "  clean        Clean up temporary files"
+	@echo "  install       Install dependencies"
+	@echo "  lint          Run linter and type checker"
+	@echo "  test          Run tests"
+	@echo "  run           Run the CLI"
+	@echo "  docs          Build documentation"
+	@echo "  docs-serve    Serve documentation locally"
+	@echo "  docker-build  Build Docker image"
+	@echo "  docker-run    Run import in Docker"
+	@echo "  docker-serve  Start API server in Docker"
+	@echo "  clean         Clean up temporary files"
 
 install:
 	@echo ">>> Installing dependencies"
@@ -48,6 +51,15 @@ docs:
 
 docs-serve:
 	@$(UV) run mkdocs serve
+
+docker-build:
+	@docker build -t dhis2-era5land .
+
+docker-run:
+	@docker run --env-file .env dhis2-era5land run
+
+docker-serve:
+	@docker run -p 8080:8080 --env-file .env dhis2-era5land serve
 
 clean:
 	@echo ">>> Cleaning up"
