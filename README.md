@@ -87,8 +87,7 @@ Requires Python 3.12+.
 
 ```bash
 make install   # Install dependencies
-make lint      # Run ruff, mypy, pyright
-make lint-fix  # Run linter with auto-fix
+make lint      # Run ruff, mypy, pyright (with auto-fix)
 make test      # Run tests
 make run       # Run the import
 make clean     # Clean up cache files
