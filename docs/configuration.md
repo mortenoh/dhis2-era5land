@@ -39,6 +39,16 @@ Configuration is loaded in this order (later overrides earlier):
 3. `.env` file
 4. CLI arguments (highest priority)
 
+## API Server Options
+
+When running `dhis2-era5land serve`:
+
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--host` | Host to bind to | `0.0.0.0` |
+| `--port` | Port to listen on | `8080` |
+| `-v, --verbose` | Enable debug logging | `false` |
+
 ## Security Note
 
 `DHIS2_PASSWORD` can only be set via `.env` or environment variable (not CLI) for security reasons.
