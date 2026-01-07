@@ -1,5 +1,7 @@
 """CLI entry point for dhis2-era5land."""
 
+import logging
+
 import typer
 
 from dhis2_era5land.importer import import_era5_land_to_dhis2
@@ -23,6 +25,7 @@ app = typer.Typer(help="Import ERA5-Land climate data into DHIS2.")
 @app.command()
 def run() -> None:
     """Run the ERA5-Land to DHIS2 import."""
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     import_era5_land_to_dhis2(
         client,
         variable=variable,

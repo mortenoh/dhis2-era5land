@@ -1,6 +1,7 @@
 """ERA5-Land to DHIS2 import functionality."""
 
 import json
+import logging
 from collections.abc import Callable
 from datetime import date
 from typing import Any
@@ -11,6 +12,8 @@ from dhis2eo import utils
 from dhis2eo.data.cds import era5_land
 from dhis2eo.integrations.pandas import dataframe_to_dhis2_json
 from earthkit import transforms
+
+logger = logging.getLogger(__name__)
 
 
 def import_era5_land_to_dhis2(
@@ -45,33 +48,31 @@ def import_era5_land_to_dhis2(
     # the results contains an `existing` entry which contains information about the last imported period
     # ...for which data was found, or `None` if no existing data was found
     last_imported_response = client.analytics_latest_period_for_level(de_uid=data_element_id, level=org_unit_level)
-    print(last_imported_response)
+    logger.debug("Last imported response: %s", last_imported_response)
     last_imported_period = last_imported_response["existing"]
     last_imported_month_string = last_imported_period["id"][:6] if last_imported_period else None
 
     # loop through and process one month at a time
     for year, month in utils.time.iter_months(start_year, start_month, end_year, end_month):
         month_string = utils.time.dhis2_period(year=year, month=month)
-        print("")
-        print("==================")
-        print(f"Processing {month_string}")
+        logger.info("Processing %s", month_string)
 
         # determine whether data for this month has already been imported
         # we still import if this month is the latest imported one (to allow updates to partially imported months)
         needs_import = last_imported_month_string is None or (month_string >= last_imported_month_string)
-        print(f"Comparing {month_string} with {last_imported_month_string}, needs import: {needs_import}")
+        logger.debug("Comparing %s with %s, needs import: %s", month_string, last_imported_month_string, needs_import)
 
         # only continue if some of the data needs importing
         if not needs_import:
-            print("All data already imported for this month")
+            logger.info("All data already imported for this month")
             continue
 
         # download era5 data
-        print("Downloading data...")
+        logger.info("Downloading data...")
         hourly_data = era5_land.hourly.get(year=year, month=month, variables=variables, bbox=org_units.total_bounds)
 
         # aggregate to time period
-        print("Aggregating time...")
+        logger.info("Aggregating time...")
         agg_time = transforms.temporal.daily_reduce(
             hourly_data[value_col],
             how=temporal_aggregation,
@@ -80,7 +81,7 @@ def import_era5_land_to_dhis2(
         )
 
         # aggregate to org units
-        print("Aggregating to org units...")
+        logger.info("Aggregating to org units...")
         agg_org_units = transforms.spatial.reduce(
             agg_time,
             org_units,
@@ -90,11 +91,11 @@ def import_era5_land_to_dhis2(
         agg_df = agg_org_units.to_dataframe().reset_index()
 
         # post-processing
-        print("Post-processing...")
+        logger.info("Post-processing...")
         agg_df[value_col] = agg_df[value_col].apply(value_func)
 
         # create json payload
-        print("Creating payload...")
+        logger.info("Creating payload...")
         payload = dataframe_to_dhis2_json(
             df=agg_df,
             org_unit_col="id",
@@ -104,6 +105,6 @@ def import_era5_land_to_dhis2(
         )
 
         # import to dhis2
-        print("Importing...")
+        logger.info("Importing...")
         res = client.post("/api/dataValueSets", json=payload, params={"dryRun": str(dry_run).lower()})
-        print(f"--> Import results: {res['response']['importCount']}")
+        logger.info("Import results: %s", res["response"]["importCount"])
