@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     For example: DHIS2_BASE_URL, DHIS2_USERNAME, DHIS2_PASSWORD, etc.
     """
 
-    model_config = SettingsConfigDict(env_prefix="DHIS2_")
+    model_config = SettingsConfigDict(env_prefix="DHIS2_", env_file=".env")
 
     # DHIS2 connection
     base_url: str = "https://play.im.dhis2.org/stable-2-42-3-1"
