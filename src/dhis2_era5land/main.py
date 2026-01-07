@@ -2,6 +2,8 @@
 
 from dhis2_client import DHIS2Client
 
+from dhis2_era5land.transforms import meters_to_millimeters
+
 ################
 # Script Inputs:
 
@@ -20,12 +22,7 @@ data_element_id = "bMoGyfJoH9c"  # update this to the correct DHIS2 data element
 
 # define how to get and process the values
 value_col = "tp"  # name of the column that contains the values
-
-
-def value_processing(value: float) -> float:
-    """Convert precipitation from meters to millimeters."""
-    return value * 1000
-
+value_processing = meters_to_millimeters  # transform function for values
 
 # define how to aggregate the values
 temporal_aggregation = (
