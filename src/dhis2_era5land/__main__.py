@@ -1,10 +1,10 @@
 """Entry point for python -m dhis2_era5land."""
 
+from dhis2_era5land.importer import import_era5_land_to_dhis2
 from dhis2_era5land.main import (
     client,
     data_element_id,
     end_date,
-    import_era5_land_to_dhis2,
     org_unit_level,
     spatial_aggregation,
     start_date,
