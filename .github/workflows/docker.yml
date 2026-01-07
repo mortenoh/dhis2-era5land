@@ -1,0 +1,19 @@
+name: Docker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t dhis2-era5land .
+
+      - name: Test Docker image
+        run: docker run dhis2-era5land --help
