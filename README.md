@@ -127,6 +127,18 @@ Note: `DHIS2_PASSWORD` can only be set via `.env` or environment variable (not C
 
 ## Docker
 
+### Docker Compose
+
+```bash
+# Run import
+docker compose run --rm run
+
+# Start API server
+docker compose up serve
+```
+
+### Manual
+
 ```bash
 # Build
 docker build -t dhis2-era5land .
@@ -136,6 +148,13 @@ docker run --env-file .env dhis2-era5land run
 
 # Start API server
 docker run -p 8080:8080 --env-file .env dhis2-era5land serve
+```
+
+### Pre-built Image
+
+```bash
+docker pull ghcr.io/mortenoh/dhis2-era5land:main
+docker run --env-file .env ghcr.io/mortenoh/dhis2-era5land:main run
 ```
 
 ## Development
