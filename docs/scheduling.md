@@ -56,15 +56,44 @@ This provides **process isolation** - if an import fails or crashes, it doesn't 
 | `DHIS2_END_DATE` | **Yes** | End date for imports |
 | `DHIS2_CRON` | No | Cron expression (default: `0 1 * * *`) |
 
+## Cron Syntax
+
+```
+┌───────────── minute (0-59)
+│ ┌─────────── hour (0-23)
+│ │ ┌───────── day of month (1-31)
+│ │ │ ┌─────── month (1-12)
+│ │ │ │ ┌───── day of week (0-6, Sunday=0)
+│ │ │ │ │
+* * * * *
+```
+
+**Special characters:**
+
+| Character | Meaning | Example |
+|-----------|---------|---------|
+| `*` | Any value | `* * * * *` = every minute |
+| `,` | List | `0,30 * * * *` = at :00 and :30 |
+| `-` | Range | `0 9-17 * * *` = hourly 9am-5pm |
+| `/` | Step | `*/15 * * * *` = every 15 minutes |
+
 ## Cron Expression Examples
 
 | Expression | Description |
 |------------|-------------|
 | `0 6 * * *` | Daily at 6:00 AM |
 | `0 0 * * *` | Daily at midnight |
+| `0 6,18 * * *` | Twice daily at 6:00 AM and 6:00 PM |
+| `0 */6 * * *` | Every 6 hours |
+| `0 6 * * 1-5` | Weekdays at 6:00 AM |
 | `0 6 * * 1` | Weekly on Monday at 6:00 AM |
+| `0 6 * * 0` | Weekly on Sunday at 6:00 AM |
 | `0 0 1 * *` | Monthly on the 1st at midnight |
+| `0 6 1 */3 *` | Quarterly on the 1st at 6:00 AM |
+| `0 6 1 1 *` | Yearly on January 1st at 6:00 AM |
 | `*/5 * * * *` | Every 5 minutes (for testing) |
+
+**Tip:** Use [crontab.guru](https://crontab.guru/) to build and test cron expressions interactively.
 
 ## Docker Compose
 
