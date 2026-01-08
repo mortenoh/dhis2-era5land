@@ -49,7 +49,7 @@ dhis2-era5land serve --port 3000 -v
 | `--base-url` | DHIS2 base URL | `https://play.im.dhis2.org/stable-2-42-3-1` |
 | `--username` | DHIS2 username | `admin` |
 | `--variable` | ERA5 variable name | `total_precipitation` |
-| `--data-element-id` | DHIS2 data element ID | `bMoGyfJoH9c` |
+| `--data-element-id` | DHIS2 data element ID | **required** |
 | `--value-col` | Value column name | `tp` |
 | `--value-transform` | Value transform | `meters_to_millimeters` |
 | `--temporal-aggregation` | Temporal aggregation (`sum`, `mean`) | `sum` |
@@ -103,7 +103,7 @@ Environment variables (prefix `DHIS2_`) or `.env` file. CLI options override env
 | `DHIS2_USERNAME` | `admin` |
 | `DHIS2_PASSWORD` | `district` |
 | `DHIS2_VARIABLE` | `total_precipitation` |
-| `DHIS2_DATA_ELEMENT_ID` | `bMoGyfJoH9c` |
+| `DHIS2_DATA_ELEMENT_ID` | **required** |
 | `DHIS2_VALUE_COL` | `tp` |
 | `DHIS2_VALUE_TRANSFORM` | `meters_to_millimeters` |
 | `DHIS2_TEMPORAL_AGGREGATION` | `sum` |
@@ -119,6 +119,7 @@ Example `.env` file:
 DHIS2_BASE_URL=https://your-dhis2-instance.org
 DHIS2_USERNAME=your-username
 DHIS2_PASSWORD=your-password
+DHIS2_DATA_ELEMENT_ID=your-data-element-id
 DHIS2_START_DATE=2024-01-01
 DHIS2_END_DATE=2024-12-31
 ```

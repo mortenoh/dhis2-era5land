@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
     # ERA5 variable config
     variable: str = "total_precipitation"
-    data_element_id: str = "bMoGyfJoH9c"
+    data_element_id: str | None = None  # Required at runtime
     value_col: str = "tp"
     value_transform: Transform = Transform.METERS_TO_MILLIMETERS
 

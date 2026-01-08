@@ -60,7 +60,7 @@ class ImportRequest(BaseModel):
     start_date: str | None = None
     end_date: str | None = None
     variable: str | None = None
-    data_element_id: str | None = None
+    data_element_id: str  # Required
     value_col: str | None = None
     value_transform: str | None = None
     temporal_aggregation: str | None = None
@@ -125,7 +125,7 @@ def run_import(request: ImportRequest) -> None:
         start_date = request.start_date or settings.start_date
         end_date = request.end_date or settings.end_date
         variable = request.variable or settings.variable
-        data_element_id = request.data_element_id or settings.data_element_id
+        data_element_id = request.data_element_id  # Required field
         value_col = request.value_col or settings.value_col
         value_transform = request.value_transform or settings.value_transform
         temporal_aggregation = request.temporal_aggregation or settings.temporal_aggregation

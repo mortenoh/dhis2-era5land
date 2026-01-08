@@ -10,7 +10,7 @@ All settings can be configured via environment variables (prefix `DHIS2_`) or a 
 | `DHIS2_USERNAME` | `admin` |
 | `DHIS2_PASSWORD` | `district` |
 | `DHIS2_VARIABLE` | `total_precipitation` |
-| `DHIS2_DATA_ELEMENT_ID` | `bMoGyfJoH9c` |
+| `DHIS2_DATA_ELEMENT_ID` | **required** |
 | `DHIS2_VALUE_COL` | `tp` |
 | `DHIS2_VALUE_TRANSFORM` | `meters_to_millimeters` |
 | `DHIS2_TEMPORAL_AGGREGATION` | `sum` |
@@ -26,6 +26,7 @@ All settings can be configured via environment variables (prefix `DHIS2_`) or a 
 DHIS2_BASE_URL=https://your-dhis2-instance.org
 DHIS2_USERNAME=your-username
 DHIS2_PASSWORD=your-password
+DHIS2_DATA_ELEMENT_ID=your-data-element-id
 DHIS2_START_DATE=2024-01-01
 DHIS2_END_DATE=2024-12-31
 ```

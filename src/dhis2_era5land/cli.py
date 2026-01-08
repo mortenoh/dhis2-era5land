@@ -27,7 +27,7 @@ def run(
     username: Annotated[str, typer.Option(help="DHIS2 username")] = settings.username,
     # ERA5 config
     variable: Annotated[str, typer.Option(help="ERA5 variable name")] = settings.variable,
-    data_element_id: Annotated[str, typer.Option(help="DHIS2 data element ID")] = settings.data_element_id,
+    data_element_id: Annotated[str, typer.Option(help="DHIS2 data element ID (required)")] = ...,
     value_col: Annotated[str, typer.Option(help="Value column name")] = settings.value_col,
     value_transform: Annotated[Transform, typer.Option(help="Value transform")] = settings.value_transform,
     # Aggregation
