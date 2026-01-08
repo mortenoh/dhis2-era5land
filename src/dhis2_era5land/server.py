@@ -2,6 +2,8 @@
 
 import logging
 import threading
+from collections.abc import AsyncGenerator
+from contextlib import asynccontextmanager
 from datetime import datetime
 from enum import StrEnum
 from typing import Any
@@ -15,6 +17,27 @@ from dhis2_era5land.settings import settings
 from dhis2_era5land.transforms import Transform, get_transform
 
 logger = logging.getLogger(__name__)
+
+
+def validate_settings() -> None:
+    """Validate required settings at startup."""
+    missing: list[str] = []
+    if not settings.base_url:
+        missing.append("DHIS2_BASE_URL")
+    if not settings.username:
+        missing.append("DHIS2_USERNAME")
+    if not settings.password:
+        missing.append("DHIS2_PASSWORD")
+    if missing:
+        raise ValueError(f"Missing required environment variables: {', '.join(missing)}")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """Validate settings on startup."""
+    validate_settings()
+    logger.info("Settings validated, server starting")
+    yield
 
 
 class ImportStatus(StrEnum):
@@ -44,6 +67,7 @@ _lock = threading.Lock()
 app = FastAPI(
     title="dhis2-era5land",
     description="Import ERA5-Land climate data into DHIS2",
+    lifespan=lifespan,
 )
 
 
@@ -133,15 +157,7 @@ def run_import(request: ImportRequest) -> None:
         timezone_offset = request.timezone_offset if request.timezone_offset is not None else settings.timezone_offset
         org_unit_level = request.org_unit_level if request.org_unit_level is not None else settings.org_unit_level
 
-        # Validate required settings
-        if not settings.base_url:
-            raise ValueError("DHIS2_BASE_URL environment variable is required")
-        if not settings.username:
-            raise ValueError("DHIS2_USERNAME environment variable is required")
-        if not settings.password:
-            raise ValueError("DHIS2_PASSWORD environment variable is required")
-
-        # Create DHIS2 client
+        # Create DHIS2 client (settings validated at startup)
         client = DHIS2Client(
             base_url=settings.base_url,
             username=settings.username,
