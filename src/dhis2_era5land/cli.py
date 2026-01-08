@@ -23,8 +23,8 @@ def run(
     start_date: Annotated[str, typer.Option(help="Start date (YYYY-MM-DD)")] = settings.start_date,
     end_date: Annotated[str, typer.Option(help="End date (YYYY-MM-DD)")] = settings.end_date,
     # DHIS2 connection (password from env only)
-    base_url: Annotated[str, typer.Option(help="DHIS2 base URL")] = settings.base_url,
-    username: Annotated[str, typer.Option(help="DHIS2 username")] = settings.username,
+    base_url: Annotated[str, typer.Option(help="DHIS2 base URL (required)")] = ...,
+    username: Annotated[str, typer.Option(help="DHIS2 username (required)")] = ...,
     # ERA5 config
     variable: Annotated[str, typer.Option(help="ERA5 variable name")] = settings.variable,
     data_element_id: Annotated[str, typer.Option(help="DHIS2 data element ID (required)")] = ...,
@@ -45,6 +45,10 @@ def run(
     """Run the ERA5-Land to DHIS2 import."""
     log_level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")
+
+    # Validate password is set (can only be set via env/settings)
+    if not settings.password:
+        raise typer.BadParameter("DHIS2_PASSWORD environment variable is required")
 
     # Create DHIS2 client (password always from settings/env)
     client = DHIS2Client(

@@ -6,9 +6,9 @@ All settings can be configured via environment variables (prefix `DHIS2_`) or a 
 
 | Environment Variable | Default |
 |---------------------|---------|
-| `DHIS2_BASE_URL` | `https://play.im.dhis2.org/stable-2-42-3-1` |
-| `DHIS2_USERNAME` | `admin` |
-| `DHIS2_PASSWORD` | `district` |
+| `DHIS2_BASE_URL` | **required** |
+| `DHIS2_USERNAME` | **required** |
+| `DHIS2_PASSWORD` | **required** |
 | `DHIS2_VARIABLE` | `total_precipitation` |
 | `DHIS2_DATA_ELEMENT_ID` | **required** |
 | `DHIS2_VALUE_COL` | `tp` |

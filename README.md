@@ -46,8 +46,8 @@ dhis2-era5land serve --port 3000 -v
 |--------|-------------|---------|
 | `--start-date` | Start date (YYYY-MM-DD) | `2025-10-01` |
 | `--end-date` | End date (YYYY-MM-DD) | `2025-12-30` |
-| `--base-url` | DHIS2 base URL | `https://play.im.dhis2.org/stable-2-42-3-1` |
-| `--username` | DHIS2 username | `admin` |
+| `--base-url` | DHIS2 base URL | **required** |
+| `--username` | DHIS2 username | **required** |
 | `--variable` | ERA5 variable name | `total_precipitation` |
 | `--data-element-id` | DHIS2 data element ID | **required** |
 | `--value-col` | Value column name | `tp` |
@@ -99,9 +99,9 @@ Environment variables (prefix `DHIS2_`) or `.env` file. CLI options override env
 
 | Environment Variable | Default |
 |---------------------|---------|
-| `DHIS2_BASE_URL` | `https://play.im.dhis2.org/stable-2-42-3-1` |
-| `DHIS2_USERNAME` | `admin` |
-| `DHIS2_PASSWORD` | `district` |
+| `DHIS2_BASE_URL` | **required** |
+| `DHIS2_USERNAME` | **required** |
+| `DHIS2_PASSWORD` | **required** |
 | `DHIS2_VARIABLE` | `total_precipitation` |
 | `DHIS2_DATA_ELEMENT_ID` | **required** |
 | `DHIS2_VALUE_COL` | `tp` |

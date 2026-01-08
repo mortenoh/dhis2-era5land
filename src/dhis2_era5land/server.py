@@ -133,6 +133,14 @@ def run_import(request: ImportRequest) -> None:
         timezone_offset = request.timezone_offset if request.timezone_offset is not None else settings.timezone_offset
         org_unit_level = request.org_unit_level if request.org_unit_level is not None else settings.org_unit_level
 
+        # Validate required settings
+        if not settings.base_url:
+            raise ValueError("DHIS2_BASE_URL environment variable is required")
+        if not settings.username:
+            raise ValueError("DHIS2_USERNAME environment variable is required")
+        if not settings.password:
+            raise ValueError("DHIS2_PASSWORD environment variable is required")
+
         # Create DHIS2 client
         client = DHIS2Client(
             base_url=settings.base_url,

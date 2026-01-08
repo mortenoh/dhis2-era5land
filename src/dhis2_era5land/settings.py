@@ -14,10 +14,10 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="DHIS2_", env_file=".env")
 
-    # DHIS2 connection
-    base_url: str = "https://play.im.dhis2.org/stable-2-42-3-1"
-    username: str = "admin"
-    password: str = "district"
+    # DHIS2 connection (all required at runtime)
+    base_url: str | None = None
+    username: str | None = None
+    password: str | None = None
 
     # ERA5 variable config
     variable: str = "total_precipitation"
