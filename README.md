@@ -76,14 +76,14 @@ dhis2-era5land serve --port 3000 -v
 
 ### POST /import
 
-All configuration from environment variables. Only `dry_run` query param supported.
+All configuration from environment variables. Only `dryRun` query param supported.
 
 ```bash
 # Run import
 curl -X POST http://localhost:8080/import
 
 # Dry run
-curl -X POST "http://localhost:8080/import?dry_run=true"
+curl -X POST "http://localhost:8080/import?dryRun=true"
 ```
 
 ## Value Transforms

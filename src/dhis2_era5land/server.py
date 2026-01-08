@@ -66,7 +66,7 @@ def health() -> HealthResponse:
 
 
 @app.post("/import", response_model=ImportResponse)
-def run_import(dry_run: bool = Query(default=False)) -> ImportResponse:
+def run_import(dryRun: bool = Query(default=False)) -> ImportResponse:
     """Run an import (blocks until complete). All config from environment."""
     try:
         client = DHIS2Client(
@@ -89,7 +89,7 @@ def run_import(dry_run: bool = Query(default=False)) -> ImportResponse:
             end_date=settings.end_date,
             timezone_offset=settings.timezone_offset,
             org_unit_level=settings.org_unit_level,
-            dry_run=dry_run,
+            dry_run=dryRun,
         )
 
         return ImportResponse(status="ok", message="Import completed successfully")
