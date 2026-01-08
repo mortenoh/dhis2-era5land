@@ -65,7 +65,7 @@ def health() -> HealthResponse:
     return HealthResponse(status="ok")
 
 
-@app.post("/import", response_model=ImportResponse)
+@app.post("/$import", response_model=ImportResponse)
 def run_import(dryRun: bool = Query(default=False)) -> ImportResponse:
     """Run an import (blocks until complete). All config from environment."""
     try:

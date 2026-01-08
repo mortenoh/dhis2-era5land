@@ -15,7 +15,7 @@ This tool downloads ERA5-Land climate data from the Copernicus Climate Data Stor
 - Incremental import (skips already imported periods)
 - Dry run mode for testing
 - **CLI mode** for one-time or scheduled imports
-- **API mode** for HTTP-triggered imports with status monitoring
+- **API mode** for HTTP-triggered imports
 
 ## Quick Start
 
