@@ -7,6 +7,7 @@ from datetime import date
 from typing import Any
 
 import geopandas as gpd
+import numpy as np
 from dhis2_client import DHIS2Client
 from dhis2eo import utils
 from dhis2eo.data.cds import era5_land
@@ -94,8 +95,22 @@ def import_era5_land_to_dhis2(
         logger.info("Post-processing...")
         agg_df[value_col] = agg_df[value_col].apply(value_func)
 
+        # filter out NaN and inf values (org units with no data coverage or bad data)
+        invalid_mask = agg_df[value_col].isna() | np.isinf(agg_df[value_col])
+        invalid_count = invalid_mask.sum()
+        if invalid_count > 0:
+            invalid_rows = agg_df[invalid_mask][["id", "valid_time", value_col]]
+            logger.warning(
+                "Dropping %d rows with invalid values (NaN/inf):\n%s",
+                invalid_count,
+                invalid_rows.to_string(),  # pyright: ignore[reportAttributeAccessIssue]
+            )
+            agg_df = agg_df[~invalid_mask]
+
+        logger.debug("Data sample:\n%s", agg_df.head(10).to_string())
+
         # create json payload
-        logger.info("Creating payload...")
+        logger.info("Creating payload with %d values...", len(agg_df))
         payload = dataframe_to_dhis2_json(
             df=agg_df,
             org_unit_col="id",
@@ -103,6 +118,11 @@ def import_era5_land_to_dhis2(
             value_col=value_col,
             data_element_id=data_element_id,
         )
+
+        # Convert values to string format (DHIS2 doesn't accept scientific notation)
+        data_values = payload.get("dataValues", [])
+        for dv in data_values:
+            dv["value"] = f"{dv['value']:.10f}".rstrip("0").rstrip(".")
 
         # import to dhis2
         logger.info("Importing...")
