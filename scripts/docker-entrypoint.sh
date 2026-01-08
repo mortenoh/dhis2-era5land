@@ -9,8 +9,8 @@ if [ "$1" = "scheduler" ]; then
     # Export all DHIS2_ and CDSAPI_ env vars for cron job
     printenv | grep -E '^(DHIS2_|CDSAPI_)' > /app/.env.cron
 
-    # Create crontab entry
-    echo "$DHIS2_CRON cd /app && set -a && . /app/.env.cron && set +a && uv run --no-sync dhis2-era5land run 2>&1" | crontab -
+    # Create crontab entry (redirect output to Docker stdout/stderr)
+    echo "$DHIS2_CRON cd /app && set -a && . /app/.env.cron && set +a && uv run --no-sync dhis2-era5land run >> /proc/1/fd/1 2>> /proc/1/fd/2" | crontab -
 
     echo "Scheduler started with: $DHIS2_CRON"
     crontab -l
