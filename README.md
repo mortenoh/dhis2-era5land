@@ -72,8 +72,7 @@ dhis2-era5land serve --port 3000 -v
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/health` | GET | Health check |
-| `/status` | GET | Current import status |
-| `/import` | POST | Trigger an import |
+| `/import` | POST | Run an import (blocks until complete) |
 
 ### POST /import
 

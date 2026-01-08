@@ -1,15 +1,11 @@
 """FastAPI server for ERA5-Land to DHIS2 import."""
 
 import logging
-import threading
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
-from datetime import datetime
-from enum import StrEnum
-from typing import Any
 
 from dhis2_client import DHIS2Client
-from fastapi import BackgroundTasks, FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 from dhis2_era5land.importer import import_era5_land_to_dhis2
@@ -38,30 +34,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     validate_settings()
     logger.info("Settings validated, server starting")
     yield
-
-
-class ImportStatus(StrEnum):
-    """Import job status."""
-
-    IDLE = "idle"
-    RUNNING = "running"
-    COMPLETED = "completed"
-    FAILED = "failed"
-
-
-class ImportState(BaseModel):
-    """Current import state."""
-
-    status: ImportStatus = ImportStatus.IDLE
-    started_at: datetime | None = None
-    completed_at: datetime | None = None
-    error: str | None = None
-    last_result: dict[str, Any] | None = None
-
-
-# Global state for tracking import status
-_state = ImportState()
-_lock = threading.Lock()
 
 
 app = FastAPI(
@@ -97,8 +69,8 @@ class ImportRequest(BaseModel):
 class ImportResponse(BaseModel):
     """Import response."""
 
+    status: str
     message: str
-    status: ImportStatus
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -107,49 +79,14 @@ def health() -> HealthResponse:
     return HealthResponse(status="ok")
 
 
-@app.get("/status", response_model=ImportState)
-def status() -> ImportState:
-    """Get current import status."""
-    with _lock:
-        return _state.model_copy()
-
-
 @app.post("/import", response_model=ImportResponse)
-def trigger_import(
-    request: ImportRequest,
-    background_tasks: BackgroundTasks,
-) -> ImportResponse:
-    """Trigger an import job."""
-    with _lock:
-        if _state.status == ImportStatus.RUNNING:
-            return ImportResponse(
-                message="Import already running",
-                status=_state.status,
-            )
-
-    background_tasks.add_task(run_import, request)
-    return ImportResponse(
-        message="Import started",
-        status=ImportStatus.RUNNING,
-    )
-
-
-def run_import(request: ImportRequest) -> None:
-    """Run the import job in the background."""
-    global _state
-
-    with _lock:
-        _state = ImportState(
-            status=ImportStatus.RUNNING,
-            started_at=datetime.now(),
-        )
-
+def run_import(request: ImportRequest) -> ImportResponse:
+    """Run an import (blocks until complete)."""
     try:
         # Use request values or fall back to settings
         start_date = request.start_date or settings.start_date
         end_date = request.end_date or settings.end_date
         variable = request.variable or settings.variable
-        data_element_id = request.data_element_id  # Required field
         value_col = request.value_col or settings.value_col
         value_transform = request.value_transform or settings.value_transform
         temporal_aggregation = request.temporal_aggregation or settings.temporal_aggregation
@@ -172,7 +109,7 @@ def run_import(request: ImportRequest) -> None:
         import_era5_land_to_dhis2(
             client=client,
             variable=variable,
-            data_element_id=data_element_id,
+            data_element_id=request.data_element_id,
             value_col=value_col,
             value_func=value_func,
             temporal_aggregation=temporal_aggregation,
@@ -184,21 +121,8 @@ def run_import(request: ImportRequest) -> None:
             dry_run=request.dry_run,
         )
 
-        with _lock:
-            _state = ImportState(
-                status=ImportStatus.COMPLETED,
-                started_at=_state.started_at,
-                completed_at=datetime.now(),
-                last_result={"message": "Import completed successfully"},
-            )
-        logger.info("Import completed successfully")
+        return ImportResponse(status="ok", message="Import completed successfully")
 
     except Exception as e:
         logger.exception("Import failed")
-        with _lock:
-            _state = ImportState(
-                status=ImportStatus.FAILED,
-                started_at=_state.started_at,
-                completed_at=datetime.now(),
-                error=str(e),
-            )
+        raise HTTPException(status_code=500, detail=str(e)) from e
