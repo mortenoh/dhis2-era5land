@@ -221,9 +221,13 @@ docker run -p 8080:8080 --env-file .env dhis2-era5land serve
 Requires Python 3.12+.
 
 ```bash
-make install   # Install dependencies
-make lint      # Run ruff, mypy, pyright (with auto-fix)
-make test      # Run tests
-make docs      # Build documentation
-make clean     # Clean up cache files
+make install          # Install dependencies
+make lint             # Run ruff, mypy, pyright (with auto-fix)
+make test             # Run tests
+make docs             # Build documentation
+make docker-build     # Build Docker image
+make docker-run       # Run import in Docker
+make docker-serve     # Start API server in Docker
+make docker-schedule  # Start scheduler in Docker
+make clean            # Clean up cache files
 ```

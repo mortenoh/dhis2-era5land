@@ -1,5 +1,14 @@
 # Docker
 
+## Make Targets
+
+```bash
+make docker-build     # Build Docker image
+make docker-run       # Run import in Docker
+make docker-serve     # Start API server in Docker
+make docker-schedule  # Start scheduler in Docker
+```
+
 ## Scheduled Imports (Recommended)
 
 The easiest way to run automated imports:
