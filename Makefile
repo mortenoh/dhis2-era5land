@@ -54,13 +54,13 @@ docs-serve:
 	@$(UV) run mkdocs serve
 
 docker-build:
-	@docker build -t dhis2-era5land .
+	@docker compose build
 
 docker-run:
-	@docker run --env-file .env dhis2-era5land run
+	@docker compose run --rm run
 
 docker-serve:
-	@docker run -p 8080:8080 --env-file .env dhis2-era5land serve
+	@docker compose up serve
 
 docker-schedule:
 	@docker compose up schedule
