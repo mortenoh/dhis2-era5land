@@ -1,15 +1,16 @@
 """FastAPI server for ERA5-Land to DHIS2 import."""
 
 import logging
+import os
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from dhis2_client import DHIS2Client
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import BackgroundTasks, FastAPI, Query
 
 from dhis2_era5land.importer import import_era5_land_to_dhis2
 from dhis2_era5land.models import HealthResponse, ImportResponse
-from dhis2_era5land.settings import settings
+from dhis2_era5land.settings import cds_settings, settings
 from dhis2_era5land.transforms import get_transform
 
 logger = logging.getLogger(__name__)
@@ -18,6 +19,8 @@ logger = logging.getLogger(__name__)
 def validate_settings() -> None:
     """Validate required settings at startup."""
     missing: list[str] = []
+    if not cds_settings.key:
+        missing.append("CDSAPI_KEY")
     if not settings.base_url:
         missing.append("DHIS2_BASE_URL")
     if not settings.username:
@@ -28,6 +31,10 @@ def validate_settings() -> None:
         missing.append("DHIS2_DATA_ELEMENT_ID")
     if missing:
         raise ValueError(f"Missing required environment variables: {', '.join(missing)}")
+
+    # Export CDS settings to environment for cdsapi library
+    os.environ["CDSAPI_URL"] = cds_settings.url
+    os.environ["CDSAPI_KEY"] = cds_settings.key  # type: ignore[assignment]  # validated above
 
 
 @asynccontextmanager
@@ -51,9 +58,8 @@ def health() -> HealthResponse:
     return HealthResponse(status="ok")
 
 
-@app.post("/$import", response_model=ImportResponse)
-def run_import(dryRun: bool = Query(default=False)) -> ImportResponse:
-    """Run an import (blocks until complete). All config from environment."""
+def do_import(dry_run: bool) -> None:
+    """Execute the import (runs in background)."""
     try:
         client = DHIS2Client(
             base_url=settings.base_url,
@@ -75,11 +81,19 @@ def run_import(dryRun: bool = Query(default=False)) -> ImportResponse:
             end_date=settings.end_date,
             timezone_offset=settings.timezone_offset,
             org_unit_level=settings.org_unit_level,
-            dry_run=dryRun,
+            dry_run=dry_run,
         )
+        logger.info("Import completed successfully")
 
-        return ImportResponse(status="ok", message="Import completed successfully")
-
-    except Exception as e:
+    except Exception:
         logger.exception("Import failed")
-        raise HTTPException(status_code=500, detail=str(e)) from e
+
+
+@app.post("/$import", response_model=ImportResponse)
+def run_import(
+    background_tasks: BackgroundTasks,
+    dryRun: bool = Query(default=False),
+) -> ImportResponse:
+    """Start an import in the background. All config from environment."""
+    background_tasks.add_task(do_import, dryRun)
+    return ImportResponse(status="started", message="Import started in background")

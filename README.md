@@ -72,19 +72,21 @@ dhis2-era5land serve --port 3000 -v
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/health` | GET | Health check |
-| `/$import` | POST | Run an import (blocks until complete) |
+| `/$import` | POST | Start an import (runs in background) |
 
 ### POST /$import
 
-All configuration from environment variables. Only `dryRun` query param supported.
+Starts an import in the background. Returns immediately. All configuration from environment variables.
 
 ```bash
-# Run import
+# Start import
 curl -X POST http://localhost:8080/\$import
 
 # Dry run
 curl -X POST "http://localhost:8080/\$import?dryRun=true"
 ```
+
+Response: `{"status": "started", "message": "Import started in background"}`
 
 ## Value Transforms
 

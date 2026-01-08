@@ -85,10 +85,10 @@ Response:
 
 ### POST /$import
 
-Run an import (blocks until complete). All configuration from environment variables.
+Starts an import in the background. Returns immediately. All configuration from environment variables.
 
 ```bash
-# Run import
+# Start import
 curl -X POST http://localhost:8080/\$import
 
 # Dry run
@@ -97,7 +97,7 @@ curl -X POST "http://localhost:8080/\$import?dryRun=true"
 
 Response:
 ```json
-{"status": "ok", "message": "Import completed successfully"}
+{"status": "started", "message": "Import started in background"}
 ```
 
 ## Value Transforms
