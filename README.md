@@ -44,8 +44,8 @@ dhis2-era5land serve --port 3000 -v
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--start-date` | Start date (YYYY-MM-DD) | `2025-10-01` |
-| `--end-date` | End date (YYYY-MM-DD) | `2025-12-30` |
+| `--start-date` | Start date (YYYY-MM-DD) | `2025-01-01` |
+| `--end-date` | End date (YYYY-MM-DD) | `2025-01-07` |
 | `--base-url` | DHIS2 base URL | **required** |
 | `--username` | DHIS2 username | **required** |
 | `--variable` | ERA5 variable name | `total_precipitation` |
@@ -98,10 +98,12 @@ curl -X POST "http://localhost:8080/\$import?dryRun=true"
 
 ## Configuration
 
-Environment variables (prefix `DHIS2_`) or `.env` file. CLI options override environment settings.
+Environment variables or `.env` file. CLI options override environment settings.
 
 | Environment Variable | Default |
 |---------------------|---------|
+| `CDSAPI_URL` | `https://cds.climate.copernicus.eu/api` |
+| `CDSAPI_KEY` | - |
 | `DHIS2_BASE_URL` | **required** |
 | `DHIS2_USERNAME` | **required** |
 | `DHIS2_PASSWORD` | **required** |
@@ -111,14 +113,20 @@ Environment variables (prefix `DHIS2_`) or `.env` file. CLI options override env
 | `DHIS2_VALUE_TRANSFORM` | `meters_to_millimeters` |
 | `DHIS2_TEMPORAL_AGGREGATION` | `sum` |
 | `DHIS2_SPATIAL_AGGREGATION` | `mean` |
-| `DHIS2_START_DATE` | `2025-10-01` |
-| `DHIS2_END_DATE` | `2025-12-30` |
+| `DHIS2_START_DATE` | `2025-01-01` |
+| `DHIS2_END_DATE` | `2025-01-07` |
 | `DHIS2_TIMEZONE_OFFSET` | `0` |
 | `DHIS2_ORG_UNIT_LEVEL` | `2` |
+| `DHIS2_CRON` | - (scheduler only) |
 
 Example `.env` file:
 
 ```env
+# CDS API (get key from https://cds.climate.copernicus.eu/how-to-api)
+CDSAPI_URL=https://cds.climate.copernicus.eu/api
+CDSAPI_KEY=your-cds-api-key
+
+# DHIS2 connection
 DHIS2_BASE_URL=https://your-dhis2-instance.org
 DHIS2_USERNAME=your-username
 DHIS2_PASSWORD=your-password
@@ -152,6 +160,20 @@ docker compose run --rm run
 # Start API server (builds locally)
 docker compose up serve
 ```
+
+### Scheduled Imports
+
+Run automated imports on a cron schedule:
+
+```bash
+# Add to .env
+DHIS2_CRON=0 6 * * *  # Daily at 6am
+
+# Start scheduler
+docker compose -f compose.ghcr.yml up schedule
+```
+
+See [scheduling documentation](https://mortenoh.github.io/dhis2-era5land/scheduling/) for details.
 
 ### Manual
 

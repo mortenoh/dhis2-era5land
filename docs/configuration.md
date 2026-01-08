@@ -1,8 +1,17 @@
 # Configuration
 
-All settings can be configured via environment variables (prefix `DHIS2_`) or a `.env` file. CLI options override environment settings.
+All settings can be configured via environment variables or a `.env` file. CLI options override environment settings.
 
-## Environment Variables
+## CDS API
+
+The [Climate Data Store API](https://cds.climate.copernicus.eu/how-to-api) is required to download ERA5-Land data.
+
+| Environment Variable | Default |
+|---------------------|---------|
+| `CDSAPI_URL` | `https://cds.climate.copernicus.eu/api` |
+| `CDSAPI_KEY` | - |
+
+## DHIS2 Settings
 
 | Environment Variable | Default |
 |---------------------|---------|
@@ -15,14 +24,19 @@ All settings can be configured via environment variables (prefix `DHIS2_`) or a 
 | `DHIS2_VALUE_TRANSFORM` | `meters_to_millimeters` |
 | `DHIS2_TEMPORAL_AGGREGATION` | `sum` |
 | `DHIS2_SPATIAL_AGGREGATION` | `mean` |
-| `DHIS2_START_DATE` | `2025-10-01` |
-| `DHIS2_END_DATE` | `2025-12-30` |
+| `DHIS2_START_DATE` | `2025-01-01` |
+| `DHIS2_END_DATE` | `2025-01-07` |
 | `DHIS2_TIMEZONE_OFFSET` | `0` |
 | `DHIS2_ORG_UNIT_LEVEL` | `2` |
 
 ## Example `.env` File
 
 ```env
+# CDS API (required)
+CDSAPI_URL=https://cds.climate.copernicus.eu/api
+CDSAPI_KEY=your-cds-api-key
+
+# DHIS2 connection
 DHIS2_BASE_URL=https://your-dhis2-instance.org
 DHIS2_USERNAME=your-username
 DHIS2_PASSWORD=your-password

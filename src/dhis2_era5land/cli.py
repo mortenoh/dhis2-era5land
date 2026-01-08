@@ -1,6 +1,7 @@
 """CLI for dhis2-era5land."""
 
 import logging
+import os
 from typing import Annotated
 
 import typer
@@ -8,7 +9,7 @@ import uvicorn
 from dhis2_client import DHIS2Client
 
 from dhis2_era5land.importer import import_era5_land_to_dhis2
-from dhis2_era5land.settings import settings
+from dhis2_era5land.settings import cds_settings, settings
 from dhis2_era5land.transforms import Transform, get_transform
 
 app = typer.Typer(
@@ -43,9 +44,17 @@ def run(
     verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Enable debug logging")] = False,
 ) -> None:
     """Run the ERA5-Land to DHIS2 import."""
-    # Validate password (env only)
+    # Validate required env vars
     if not settings.password:
         raise typer.BadParameter("DHIS2_PASSWORD environment variable is required")
+    if not cds_settings.key:
+        raise typer.BadParameter(
+            "CDSAPI_KEY environment variable is required (get one from https://cds.climate.copernicus.eu/how-to-api)"
+        )
+
+    # Export CDS settings to environment for cdsapi library
+    os.environ["CDSAPI_URL"] = cds_settings.url
+    os.environ["CDSAPI_KEY"] = cds_settings.key
 
     log_level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")

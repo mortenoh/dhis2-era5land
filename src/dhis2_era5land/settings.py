@@ -5,6 +5,18 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from dhis2_era5land.transforms import Transform
 
 
+class CDSSettings(BaseSettings):
+    """Settings for CDS API.
+
+    Get your API key from: https://cds.climate.copernicus.eu/how-to-api
+    """
+
+    model_config = SettingsConfigDict(env_prefix="CDSAPI_", env_file=".env", extra="ignore")
+
+    url: str = "https://cds.climate.copernicus.eu/api"
+    key: str | None = None
+
+
 class Settings(BaseSettings):
     """Settings for ERA5-Land to DHIS2 import.
 
@@ -12,7 +24,7 @@ class Settings(BaseSettings):
     For example: DHIS2_BASE_URL, DHIS2_USERNAME, DHIS2_PASSWORD, etc.
     """
 
-    model_config = SettingsConfigDict(env_prefix="DHIS2_", env_file=".env")
+    model_config = SettingsConfigDict(env_prefix="DHIS2_", env_file=".env", extra="ignore")
 
     # DHIS2 connection (all required at runtime)
     base_url: str | None = None
@@ -30,13 +42,17 @@ class Settings(BaseSettings):
     spatial_aggregation: str = "mean"
 
     # Date range
-    start_date: str = "2025-10-01"
-    end_date: str = "2025-12-30"
+    start_date: str = "2025-01-01"
+    end_date: str = "2025-01-07"
 
     # Other settings
     timezone_offset: int = 0
     org_unit_level: int = 2
 
+    # Scheduler
+    cron: str = "0 1 * * *"  # Daily at 1am
 
-# Default settings instance
+
+# Default settings instances
+cds_settings = CDSSettings()
 settings = Settings()

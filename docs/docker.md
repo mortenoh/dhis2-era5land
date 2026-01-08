@@ -41,9 +41,15 @@ docker run -p 8080:8080 --env-file .env dhis2-era5land serve
 Create a `.env` file:
 
 ```env
+# CDS API (required)
+CDSAPI_URL=https://cds.climate.copernicus.eu/api
+CDSAPI_KEY=your-cds-api-key
+
+# DHIS2 connection
 DHIS2_BASE_URL=https://your-dhis2-instance.org
 DHIS2_USERNAME=your-username
 DHIS2_PASSWORD=your-password
+DHIS2_DATA_ELEMENT_ID=your-data-element-id
 DHIS2_START_DATE=2024-01-01
 DHIS2_END_DATE=2024-12-31
 ```
@@ -105,7 +111,9 @@ Create the secret:
 
 ```bash
 kubectl create secret generic dhis2-credentials \
+  --from-literal=CDSAPI_KEY=your-cds-api-key \
   --from-literal=DHIS2_BASE_URL=https://your-dhis2.org \
   --from-literal=DHIS2_USERNAME=admin \
-  --from-literal=DHIS2_PASSWORD=secret
+  --from-literal=DHIS2_PASSWORD=secret \
+  --from-literal=DHIS2_DATA_ELEMENT_ID=your-data-element-id
 ```

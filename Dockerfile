@@ -20,10 +20,11 @@ RUN uv sync --frozen --no-dev
 
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
-# Install runtime dependencies only
+# Install runtime dependencies and cron for scheduler mode
 RUN apt-get update && apt-get install -y \
     libgeos-c1v5 \
     libproj25 \
+    cron \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -31,6 +32,9 @@ WORKDIR /app
 # Copy installed packages from builder
 COPY --from=builder /app /app
 
-# Default to showing help
-ENTRYPOINT ["uv", "run", "--no-sync", "dhis2-era5land"]
+# Copy entrypoint script
+COPY scripts/docker-entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 CMD []

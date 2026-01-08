@@ -43,8 +43,8 @@ dhis2-era5land serve --port 3000 -v
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--start-date` | Start date (YYYY-MM-DD) | `2025-10-01` |
-| `--end-date` | End date (YYYY-MM-DD) | `2025-12-30` |
+| `--start-date` | Start date (YYYY-MM-DD) | `2025-01-01` |
+| `--end-date` | End date (YYYY-MM-DD) | `2025-01-07` |
 | `--base-url` | DHIS2 base URL | **required** |
 | `--username` | DHIS2 username | **required** |
 | `--variable` | ERA5 variable name | `total_precipitation` |
@@ -58,7 +58,7 @@ dhis2-era5land serve --port 3000 -v
 | `--dry-run` | Don't actually import | `false` |
 | `-v, --verbose` | Enable debug logging | `false` |
 
-Note: `DHIS2_PASSWORD` must be set via environment variable (not CLI) for security.
+Note: `DHIS2_PASSWORD` and `CDSAPI_KEY` must be set via environment variable (not CLI).
 
 ## CLI Options (serve)
 

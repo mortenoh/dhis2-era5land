@@ -46,5 +46,5 @@ docker run -p 8080:8080 --env-file .env dhis2-era5land serve
 ## Requirements
 
 - Python 3.12+
+- [CDS API key](https://cds.climate.copernicus.eu/how-to-api) for ERA5-Land data access
 - Access to a DHIS2 instance
-- ERA5-Land data access via dhis2eo library
