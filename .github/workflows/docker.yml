@@ -20,6 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -46,6 +49,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
+          platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -54,4 +58,4 @@ jobs:
 
       - name: Test image
         if: github.event_name != 'pull_request'
-        run: docker run ${{ fromJSON(steps.meta.outputs.json).tags[0] }} --help
+        run: docker run --platform linux/amd64 ${{ fromJSON(steps.meta.outputs.json).tags[0] }} --help
