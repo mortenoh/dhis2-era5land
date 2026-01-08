@@ -23,11 +23,11 @@ def run(
     start_date: Annotated[str, typer.Option(help="Start date (YYYY-MM-DD)")] = settings.start_date,
     end_date: Annotated[str, typer.Option(help="End date (YYYY-MM-DD)")] = settings.end_date,
     # DHIS2 connection (password from env only)
-    base_url: Annotated[str, typer.Option(help="DHIS2 base URL (required)")] = ...,
-    username: Annotated[str, typer.Option(help="DHIS2 username (required)")] = ...,
+    base_url: Annotated[str | None, typer.Option(help="DHIS2 base URL (required)")] = None,
+    username: Annotated[str | None, typer.Option(help="DHIS2 username (required)")] = None,
     # ERA5 config
     variable: Annotated[str, typer.Option(help="ERA5 variable name")] = settings.variable,
-    data_element_id: Annotated[str, typer.Option(help="DHIS2 data element ID (required)")] = ...,
+    data_element_id: Annotated[str | None, typer.Option(help="DHIS2 data element ID (required)")] = None,
     value_col: Annotated[str, typer.Option(help="Value column name")] = settings.value_col,
     value_transform: Annotated[Transform, typer.Option(help="Value transform")] = settings.value_transform,
     # Aggregation
@@ -43,18 +43,27 @@ def run(
     verbose: Annotated[bool, typer.Option("--verbose", "-v", help="Enable debug logging")] = False,
 ) -> None:
     """Run the ERA5-Land to DHIS2 import."""
+    # Validate all required options
+    missing: list[str] = []
+    if not base_url:
+        missing.append("--base-url")
+    if not username:
+        missing.append("--username")
+    if not settings.password:
+        missing.append("DHIS2_PASSWORD (env)")
+    if not data_element_id:
+        missing.append("--data-element-id")
+    if missing:
+        raise typer.BadParameter(f"Missing required options: {', '.join(missing)}")
+
     log_level = logging.DEBUG if verbose else logging.INFO
     logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")
 
-    # Validate password is set (can only be set via env/settings)
-    if not settings.password:
-        raise typer.BadParameter("DHIS2_PASSWORD environment variable is required")
-
-    # Create DHIS2 client (password always from settings/env)
+    # Create DHIS2 client (validated above)
     client = DHIS2Client(
-        base_url=base_url,
-        username=username,
-        password=settings.password,
+        base_url=base_url,  # type: ignore[arg-type]
+        username=username,  # type: ignore[arg-type]
+        password=settings.password,  # type: ignore[arg-type]
     )
 
     # Get transform function by name
@@ -63,7 +72,7 @@ def run(
     import_era5_land_to_dhis2(
         client,
         variable=variable,
-        data_element_id=data_element_id,
+        data_element_id=data_element_id,  # type: ignore[arg-type]
         value_col=value_col,
         value_func=value_func,
         temporal_aggregation=temporal_aggregation,
