@@ -12,6 +12,9 @@ from dhis2_era5land.importer import import_era5_land_to_dhis2
 from dhis2_era5land.settings import cds_settings, settings
 from dhis2_era5land.transforms import Transform, get_transform
 
+LOG_FORMAT = "%(asctime)s %(levelname)-5s [%(name)s] %(message)s"
+LOG_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 app = typer.Typer(
     help="Import ERA5-Land climate data into DHIS2.",
     no_args_is_help=True,
@@ -57,7 +60,7 @@ def run(
     os.environ["CDSAPI_KEY"] = cds_settings.key
 
     log_level = logging.DEBUG if verbose else logging.INFO
-    logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")
+    logging.basicConfig(level=log_level, format=LOG_FORMAT, datefmt=LOG_DATE_FORMAT)
 
     # Create DHIS2 client
     client = DHIS2Client(
@@ -95,7 +98,8 @@ def serve(
     log_level = "debug" if verbose else "info"
     logging.basicConfig(
         level=logging.DEBUG if verbose else logging.INFO,
-        format="%(levelname)s: %(message)s",
+        format=LOG_FORMAT,
+        datefmt=LOG_DATE_FORMAT,
     )
 
     uvicorn.run(
