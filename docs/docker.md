@@ -50,16 +50,23 @@ DHIS2_END_DATE=2024-12-31
 
 ## Docker Compose
 
-Example `docker-compose.yml`:
+The project includes a `compose.yml` file:
 
-```yaml
-services:
-  dhis2-era5land:
-    build: .
-    env_file: .env
-    command: serve
-    ports:
-      - "8080:8080"
+```bash
+# Run import
+docker compose run --rm run
+
+# Start API server
+docker compose up serve
+```
+
+The compose file automatically uses `.env` if present.
+
+## Pre-built Image
+
+```bash
+docker pull ghcr.io/mortenoh/dhis2-era5land:main
+docker run --env-file .env ghcr.io/mortenoh/dhis2-era5land:main run
 ```
 
 ## Kubernetes CronJob
