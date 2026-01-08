@@ -1,4 +1,4 @@
-.PHONY: help install lint test run docs docs-serve docker-build docker-run docker-serve clean
+.PHONY: help install lint test run docs docs-serve docker-build docker-run docker-serve docker-schedule clean
 
 # ==============================================================================
 # Venv
@@ -22,10 +22,11 @@ help:
 	@echo "  run           Run the CLI"
 	@echo "  docs          Build documentation"
 	@echo "  docs-serve    Serve documentation locally"
-	@echo "  docker-build  Build Docker image"
-	@echo "  docker-run    Run import in Docker"
-	@echo "  docker-serve  Start API server in Docker"
-	@echo "  clean         Clean up temporary files"
+	@echo "  docker-build     Build Docker image"
+	@echo "  docker-run       Run import in Docker"
+	@echo "  docker-serve     Start API server in Docker"
+	@echo "  docker-schedule  Start scheduler in Docker"
+	@echo "  clean            Clean up temporary files"
 
 install:
 	@echo ">>> Installing dependencies"
@@ -60,6 +61,9 @@ docker-run:
 
 docker-serve:
 	@docker run -p 8080:8080 --env-file .env dhis2-era5land serve
+
+docker-schedule:
+	@docker compose up schedule
 
 clean:
 	@echo ">>> Cleaning up"
