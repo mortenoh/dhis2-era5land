@@ -50,7 +50,21 @@ DHIS2_END_DATE=2024-12-31
 
 ## Docker Compose
 
-The project includes a `compose.yml` file:
+### Pre-built Image (recommended)
+
+Use `compose.ghcr.yml` with the pre-built multi-arch image from GHCR:
+
+```bash
+# Run import
+docker compose -f compose.ghcr.yml run --rm run
+
+# Start API server
+docker compose -f compose.ghcr.yml up serve
+```
+
+### Build Locally
+
+Use `compose.yml` to build the image locally:
 
 ```bash
 # Run import
@@ -60,14 +74,7 @@ docker compose run --rm run
 docker compose up serve
 ```
 
-The compose file automatically uses `.env` if present.
-
-## Pre-built Image
-
-```bash
-docker pull ghcr.io/mortenoh/dhis2-era5land:main
-docker run --env-file .env ghcr.io/mortenoh/dhis2-era5land:main run
-```
+Both compose files automatically use `.env` if present.
 
 ## Kubernetes CronJob
 
