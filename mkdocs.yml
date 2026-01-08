@@ -12,10 +12,10 @@ theme:
 
 nav:
   - Home: index.md
+  - Scheduling: scheduling.md
   - Usage: usage.md
   - Configuration: configuration.md
   - Docker: docker.md
-  - Scheduling: scheduling.md
 
 markdown_extensions:
   - pymdownx.highlight

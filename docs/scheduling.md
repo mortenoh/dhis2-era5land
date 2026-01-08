@@ -5,11 +5,30 @@ Run automated imports on a schedule using the built-in scheduler.
 ## Quick Start
 
 ```bash
-# Set cron schedule in .env
-echo "DHIS2_CRON=0 6 * * *" >> .env
+# 1. Create .env file with all required settings
+cat > .env << 'EOF'
+# CDS API (required - get key from https://cds.climate.copernicus.eu/how-to-api)
+CDSAPI_KEY=your-cds-api-key
 
-# Start scheduler
-docker compose up schedule
+# DHIS2 connection (required)
+DHIS2_BASE_URL=https://your-dhis2-instance.org
+DHIS2_USERNAME=your-username
+DHIS2_PASSWORD=your-password
+DHIS2_DATA_ELEMENT_ID=your-data-element-id
+
+# Date range to import
+DHIS2_START_DATE=2024-01-01
+DHIS2_END_DATE=2024-12-31
+
+# Schedule (daily at 6am)
+DHIS2_CRON=0 6 * * *
+EOF
+
+# 2. Start the scheduler
+docker compose -f compose.ghcr.yml up -d schedule
+
+# 3. Check it's running
+docker compose -f compose.ghcr.yml logs schedule
 ```
 
 ## How It Works
@@ -27,15 +46,15 @@ This provides **process isolation** - if an import fails or crashes, it doesn't 
 
 | Variable | Required | Description |
 |----------|----------|-------------|
+| `CDSAPI_KEY` | **Yes** | CDS API key ([get one here](https://cds.climate.copernicus.eu/how-to-api)) |
 | `CDSAPI_URL` | No | CDS API URL (default: `https://cds.climate.copernicus.eu/api`) |
-| `CDSAPI_KEY` | No | CDS API key ([get one here](https://cds.climate.copernicus.eu/how-to-api)) |
+| `DHIS2_BASE_URL` | **Yes** | DHIS2 instance URL |
+| `DHIS2_USERNAME` | **Yes** | DHIS2 username |
+| `DHIS2_PASSWORD` | **Yes** | DHIS2 password |
+| `DHIS2_DATA_ELEMENT_ID` | **Yes** | Target data element |
+| `DHIS2_START_DATE` | **Yes** | Start date for imports |
+| `DHIS2_END_DATE` | **Yes** | End date for imports |
 | `DHIS2_CRON` | No | Cron expression (default: `0 1 * * *`) |
-| `DHIS2_START_DATE` | Yes | Start date for imports |
-| `DHIS2_END_DATE` | Yes | End date for imports |
-| `DHIS2_BASE_URL` | Yes | DHIS2 instance URL |
-| `DHIS2_USERNAME` | Yes | DHIS2 username |
-| `DHIS2_PASSWORD` | Yes | DHIS2 password |
-| `DHIS2_DATA_ELEMENT_ID` | Yes | Target data element |
 
 ## Cron Expression Examples
 

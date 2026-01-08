@@ -9,6 +9,32 @@
 
 Import ERA5-Land climate data into DHIS2.
 
+## Quick Start (Scheduled Imports)
+
+The easiest way to run automated imports is with Docker:
+
+```bash
+# 1. Create .env file with your credentials
+cat > .env << 'EOF'
+CDSAPI_KEY=your-cds-api-key
+DHIS2_BASE_URL=https://your-dhis2-instance.org
+DHIS2_USERNAME=your-username
+DHIS2_PASSWORD=your-password
+DHIS2_DATA_ELEMENT_ID=your-data-element-id
+DHIS2_START_DATE=2024-01-01
+DHIS2_END_DATE=2024-12-31
+DHIS2_CRON=0 6 * * *
+EOF
+
+# 2. Start the scheduler (runs daily at 6am)
+docker compose -f compose.ghcr.yml up -d schedule
+
+# 3. View logs
+docker compose -f compose.ghcr.yml logs -f schedule
+```
+
+Get your CDS API key from: https://cds.climate.copernicus.eu/how-to-api
+
 ## Installation
 
 ```bash
@@ -105,7 +131,7 @@ Environment variables or `.env` file. CLI options override environment settings.
 | Environment Variable | Default |
 |---------------------|---------|
 | `CDSAPI_URL` | `https://cds.climate.copernicus.eu/api` |
-| `CDSAPI_KEY` | - |
+| `CDSAPI_KEY` | **required** ([get one here](https://cds.climate.copernicus.eu/how-to-api)) |
 | `DHIS2_BASE_URL` | **required** |
 | `DHIS2_USERNAME` | **required** |
 | `DHIS2_PASSWORD` | **required** |

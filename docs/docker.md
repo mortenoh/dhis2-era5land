@@ -1,22 +1,34 @@
 # Docker
 
-## Make Targets
+## Scheduled Imports (Recommended)
+
+The easiest way to run automated imports:
 
 ```bash
-make docker-build   # Build Docker image
-make docker-run     # Run import in Docker
-make docker-serve   # Start API server in Docker
+# 1. Create .env file with your credentials
+cat > .env << 'EOF'
+CDSAPI_KEY=your-cds-api-key
+DHIS2_BASE_URL=https://your-dhis2-instance.org
+DHIS2_USERNAME=your-username
+DHIS2_PASSWORD=your-password
+DHIS2_DATA_ELEMENT_ID=your-data-element-id
+DHIS2_START_DATE=2024-01-01
+DHIS2_END_DATE=2024-12-31
+DHIS2_CRON=0 6 * * *
+EOF
+
+# 2. Start the scheduler (runs daily at 6am)
+docker compose -f compose.ghcr.yml up -d schedule
+
+# 3. View logs
+docker compose -f compose.ghcr.yml logs -f schedule
 ```
 
-## Building
+Get your CDS API key from: https://cds.climate.copernicus.eu/how-to-api
 
-```bash
-docker build -t dhis2-era5land .
-```
+See [Scheduling](scheduling.md) for more options and cron examples.
 
-## Running
-
-### One-time Import
+## One-time Import
 
 ```bash
 docker run --env-file .env dhis2-era5land run
@@ -61,7 +73,10 @@ DHIS2_END_DATE=2024-12-31
 Use `compose.ghcr.yml` with the pre-built multi-arch image from GHCR:
 
 ```bash
-# Run import
+# Start scheduler (recommended for production)
+docker compose -f compose.ghcr.yml up -d schedule
+
+# Run one-time import
 docker compose -f compose.ghcr.yml run --rm run
 
 # Start API server
@@ -73,7 +88,10 @@ docker compose -f compose.ghcr.yml up serve
 Use `compose.yml` to build the image locally:
 
 ```bash
-# Run import
+# Start scheduler
+docker compose up -d schedule
+
+# Run one-time import
 docker compose run --rm run
 
 # Start API server
