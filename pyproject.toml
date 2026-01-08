@@ -54,6 +54,7 @@ convention = "google"
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["D"]
 "**/__init__.py" = ["D104"]
+"main.py" = ["D"]
 
 [tool.ruff.format]
 quote-style = "double"
@@ -64,6 +65,7 @@ docstring-code-line-length = "dynamic"
 
 [tool.mypy]
 python_version = "3.12"
+exclude = ["main.py"]
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true

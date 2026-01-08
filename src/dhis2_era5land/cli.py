@@ -54,7 +54,7 @@ def run(
     client = DHIS2Client(
         base_url=base_url,
         username=username,
-        password=settings.password,  # type: ignore[arg-type]
+        password=settings.password,
     )
 
     # Get transform function by name

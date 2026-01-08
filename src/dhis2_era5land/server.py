@@ -6,9 +6,9 @@ from contextlib import asynccontextmanager
 
 from dhis2_client import DHIS2Client
 from fastapi import FastAPI, HTTPException, Query
-from pydantic import BaseModel
 
 from dhis2_era5land.importer import import_era5_land_to_dhis2
+from dhis2_era5land.models import HealthResponse, ImportResponse
 from dhis2_era5land.settings import settings
 from dhis2_era5land.transforms import get_transform
 
@@ -45,20 +45,6 @@ app = FastAPI(
 )
 
 
-class HealthResponse(BaseModel):
-    """Health check response."""
-
-    status: str
-    version: str = "0.1.0"
-
-
-class ImportResponse(BaseModel):
-    """Import response."""
-
-    status: str
-    message: str
-
-
 @app.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
     """Health check endpoint."""
@@ -70,9 +56,9 @@ def run_import(dryRun: bool = Query(default=False)) -> ImportResponse:
     """Run an import (blocks until complete). All config from environment."""
     try:
         client = DHIS2Client(
-            base_url=settings.base_url,  # type: ignore[arg-type]
-            username=settings.username,  # type: ignore[arg-type]
-            password=settings.password,  # type: ignore[arg-type]
+            base_url=settings.base_url,
+            username=settings.username,
+            password=settings.password,
         )
 
         value_func = get_transform(settings.value_transform)
