@@ -24,6 +24,7 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 RUN apt-get update && apt-get install -y \
     libgeos-c1v5 \
     libproj25 \
+    libexpat1 \
     cron \
     && rm -rf /var/lib/apt/lists/*
 
